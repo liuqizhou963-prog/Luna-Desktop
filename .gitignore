@@ -1,0 +1,57 @@
+# OS and editor noise
+.DS_Store
+Thumbs.db
+Desktop.ini
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Dependencies and generated output
+node_modules/
+_icon_tool_tmp/
+out/
+dist/
+build/
+coverage/
+*.map
+*.log
+*.tmp
+*.temp
+
+# Local Electron/application snapshots
+artifacts/
+release/
+*.zip
+# Legacy locations (for snapshots created before the reorganization)
+_app_asar_inspect/
+_app_asar_inspect_correct/
+_asar_extract2/
+露娜/luna_1.4.7/
+露娜/sessions/
+sessions/
+*.asar
+*.asar.*
+*.exe
+*.dll
+*.node
+*.pak
+*.wasm
+*.jsc
+*.ydoc
+
+# Private research and working notes
+docs/project/
+docs/research/
+research/
+
+# Local secrets and credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+secrets/
+credentials/
