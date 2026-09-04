@@ -10,6 +10,7 @@ Luna-Desktop 是 Windows 版 Luna AI 工作台的发布与检查仓库。仓库�
 |---|---|---|
 | 发布/打包入口 | [`tools/package-luna-release.ps1`](tools/package-luna-release.ps1) | 从本地应用快照生成 Windows 发布目录 |
 | EXE 品牌修补 | [`tools/patch-luna-exe.mjs`](tools/patch-luna-exe.mjs) | 设置 Luna 独立图标和 Windows 程序身份 |
+| 运行时品牌修补 | [`tools/patch-luna-runtime.ps1`](tools/patch-luna-runtime.ps1) | 固定 Electron 的应用名/AUMID，并替换编译提示词中的旧品牌 |
 | ASAR 解包 | [`tools/asar/_extract_asar_for_inspection.cjs`](tools/asar/_extract_asar_for_inspection.cjs) | 把 `app.asar` 展开到检查目录 |
 | ASAR 修补 | [`tools/asar/_patch_asar_bootstrap.cjs`](tools/asar/_patch_asar_bootstrap.cjs) | 替换打包应用的 bootstrap |
 | 文档总索引 | [`docs/index.md`](docs/index.md) | 逐个说明项目资料和研究笔记 |
@@ -55,8 +56,15 @@ Luna/
 pwsh -ExecutionPolicy Bypass -File tools/package-luna-release.ps1
 ```
 
-重新生成发布目录后，关闭正在运行的露娜，再执行以下命令修补 EXE 的 Windows
-版本资源和图标。脚本会自动保留 `.before-luna-branding.bak` 备份：
+重新生成发布目录后，关闭正在运行的露娜，先修补 `app.asar` 的运行时身份，再检查
+EXE 的 Windows 版本资源和图标。运行时脚本会保留 `app.asar.before-runtime-branding.bak`
+备份；EXE 脚本会保留 `.before-luna-branding.bak` 备份：
+
+```powershell
+pwsh -ExecutionPolicy Bypass -File tools/patch-luna-runtime.ps1
+```
+
+然后执行：
 
 ```powershell
 node tools/patch-luna-exe.mjs

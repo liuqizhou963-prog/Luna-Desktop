@@ -63,7 +63,10 @@ const output = fs.openSync(outputPath, "w");
 fs.writeSync(output, newPrefix);
 fs.writeSync(output, newHeaderBuffer);
 const beforeLength = bootstrapEntry.offset;
-const afterStart = bootstrapEntry.offset + bootstrapEntry.size - delta;
+// Read the source archive from the end of the original bootstrap payload.
+// The output payload is longer by `delta`, so only the destination offsets
+// move; the source copy position must remain at the original end.
+const afterStart = bootstrapEntry.offset + bootstrapEntry.size;
 const chunk = Buffer.allocUnsafe(1024 * 1024);
 function copyRange(start, end) {
   let position = start;
@@ -80,4 +83,4 @@ const archiveSize = fs.fstatSync(archive).size;
 copyRange(afterStart, archiveSize - dataStart);
 fs.closeSync(output);
 fs.closeSync(archive);
-console.log(JSON.stringify({ archivePath, outputPath, oldHeaderSize: headerSize, newHeaderSize, oldBootstrapSize: bootstrapEntry.size - delta, newBootstrapSize: replacement.length, delta }, null, 2));
+console.log(JSON.stringify({ archivePath, outputPath, oldHeaderSize: headerSize, newHeaderSize, oldBootstrapSize: bootstrapEntry.size, newBootstrapSize: replacement.length, delta }, null, 2));
