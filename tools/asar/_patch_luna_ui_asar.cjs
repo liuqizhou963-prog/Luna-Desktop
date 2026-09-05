@@ -12,7 +12,8 @@ function loadHeader(fd) {
   const headerSize = prefix.readUInt32LE(4);
   const headerBuffer = Buffer.alloc(headerSize);
   fs.readSync(fd, headerBuffer, 0, headerSize, 8);
-  const json = headerBuffer.subarray(8).toString("utf8").replace(/\0+$/g, "");
+  const jsonLength = headerBuffer.readUInt32LE(4);
+  const json = headerBuffer.subarray(8, 8 + jsonLength).toString("utf8");
   return { prefix, headerSize, headerBuffer, header: JSON.parse(json), dataStart: 8 + headerSize };
 }
 
