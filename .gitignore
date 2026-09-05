@@ -55,3 +55,36 @@ research/
 *.pfx
 secrets/
 credentials/
+
+# ⚠️ PRIVATE DATA — NEVER push to GitHub
+# Full Taishen database copies (conversations, memories, all user data)
+db-copy/
+db-copy-base/
+*.db
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+
+# Reverse-engineered source dumps (copyrighted app code)
+asar-extract/
+asar-extract-full/
+asar-tool/
+out_main_bootstrap.js
+out_main_index.js
+*.cjs
+*.mjs
+!tools/**
+tmp/
+
+# Local temporary profiles, inspections, screenshots, and personal notes
+.tmp-*/
+.claude/
+output/
+/*.png
+/*.jpg
+/*.jpeg
+/*.webp
+/*.gif
+/金融AI方向完整清单.md
+/银行AI应用完整方向.md
