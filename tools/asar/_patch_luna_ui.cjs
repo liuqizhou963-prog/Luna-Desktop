@@ -26,6 +26,21 @@ function replaceOnceOrVerify(file, oldText, newText, alreadyText, label) {
   throw new Error(`${label}: expected 1 original match or 1 patched match, got ${count}`);
 }
 
+function replaceAllExact(file, oldText, newText, expected, label) {
+  const before = fs.readFileSync(file, "utf8");
+  const count = before.split(oldText).length - 1;
+  if (count === expected) {
+    fs.writeFileSync(file, before.split(oldText).join(newText));
+    console.log(`${label}: patched ${count}`);
+    return;
+  }
+  if (count === 0 && before.split(newText).length - 1 >= expected) {
+    console.log(`${label}: already patched`);
+    return;
+  }
+  throw new Error(`${label}: expected ${expected} original matches, got ${count}`);
+}
+
 const renderer = `${root}/out/renderer/assets/index-BBAKMKgY.js`;
 const settings = `${root}/out/renderer/assets/SettingsPage-4AAvyvnk.js`;
 
@@ -47,6 +62,21 @@ replaceOnceOrVerify(
   "expanded left-nav canvas entry",
 );
 
+replaceAllExact(renderer,
+  'relative flex flex-1 flex-col h-full items-center justify-end bg-slate-50 pb-4',
+  'relative flex flex-1 flex-col h-full items-center justify-end bg-transparent pb-4',
+  2, "chat home background transparency");
+replaceAllExact(renderer,
+  'flex flex-1 bg-slate-50 overflow-hidden',
+  'flex flex-1 bg-transparent overflow-hidden',
+  2, "main layout background transparency");
+
+replaceOnceOrVerify(renderer,
+  'function Bi({leftPanel:e,chatArea:t,cardDock:o,previewPanel:s,bottomPanel:i,sidebarOpen:r,onToggleSidebar:l,framed:c=!0}){const[d,u]=n.useState(260),',
+  'function Bi({leftPanel:e,chatArea:t,cardDock:o,previewPanel:s,bottomPanel:i,sidebarOpen:r,onToggleSidebar:l,framed:c=!0}){const[d,u]=n.useState(260);n.useEffect(()=>{window.api?.app?.getSetting?.("taishen.backgroundImage").then(e=>{document.body.style.backgroundImage=e?`url(${e})`:"none",document.body.style.backgroundSize="cover",document.body.style.backgroundPosition="center",document.body.style.backgroundAttachment="fixed"}).catch(()=>{})},[]);',
+  'function Bi({leftPanel:e,chatArea:t,cardDock:o,previewPanel:s,bottomPanel:i,sidebarOpen:r,onToggleSidebar:l,framed:c=!0}){const[d,u]=n.useState(260);n.useEffect(()=>{window.api?.app?.getSetting?.("taishen.backgroundImage").then(e=>{document.body.style.backgroundImage=e?`url(${e})`:"none",document.body.style.backgroundSize="cover",document.body.style.backgroundPosition="center",document.body.style.backgroundAttachment="fixed"}).catch(()=>{})},[]);',
+  "main background image initialization");
+
 // Remove the IM integration tab from Settings navigation.
 replaceOnceOrVerify(
   settings,
@@ -54,4 +84,12 @@ replaceOnceOrVerify(
   '',
   null,
   "settings IM tab",
+);
+
+replaceOnceOrVerify(
+  settings,
+  'document.documentElement.style.opacity="",document.documentElement.style.backgroundColor="",document.body.style.backgroundColor="",document.body.style.backgroundImage="",document.body.style.backgroundSize="",document.body.style.backgroundPosition="",document.body.style.backgroundAttachment=""',
+  'document.documentElement.style.opacity=""',
+  null,
+  "settings background persistence",
 );
